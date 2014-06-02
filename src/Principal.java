@@ -9,7 +9,7 @@ public class Principal {
 
 	static int[] mem;
 	static int A, B;
-	static int[] var;
+	static Map<String, Integer> var;
 	static Map<String, Integer> map;
 
 	public static void main(String[] args) {
@@ -24,10 +24,7 @@ public class Principal {
 		for(int i = 0; i<256; i++){
 			mem[i] = 0;
 		}
-		var = new int[50];
-		for(int i = 0; i< 50; i++){
-			var[i] = 0;
-		}
+		var = new HashMap<String, Integer>();
 		map = new HashMap<String, Integer>();
 		A=0;
 		B=0;
@@ -44,7 +41,6 @@ public class Principal {
 			String strLinea;
 			// Leer el archivo linea por linea
 			boolean data = true;
-			int contador = 0;
 			int linea = 0;
 			while ((strLinea = buffer.readLine()) != null)   {
 				// Imprimimos la l’nea por pantalla
@@ -56,8 +52,7 @@ public class Principal {
 						}
 						else if(!auxiliar[0].equals("DATA:")){
 							String[] aux = strLinea.split(" ");
-							var[contador] = Integer.parseInt(aux[1]);
-							contador++;
+							var.put(aux[0], Integer.parseInt(aux[1]));
 						}
 					}
 				}
@@ -70,8 +65,220 @@ public class Principal {
 					{
 						map.put(aux1[0], linea);
 					}
-					if(nuevo != ""){
-						System.out.println(nuevo);
+					if(!nuevo.equals("")){
+						String[] info = nuevo.split(" ");
+						if(info[0].equals("MOV")){
+							String[] datos = info[1].split(",");
+							if(datos[0].equals("A") && datos[1].equals("B")){
+								System.out.println(MovAB());
+							}
+							if(datos[0].equals("B") && datos[1].equals("A")){
+								System.out.println(MovBA());
+							}
+							if(datos[0].equals("A") && !datos[1].equals("B") && !datos[1].contains("(")){
+								if(var.containsKey(datos[1])){
+									System.out.println(MovALit(var.get(datos[1])));
+								}
+								else{
+									System.out.println(MovALit(Integer.parseInt(datos[1])));
+								}
+							}
+							if(datos[0].equals("B") && !datos[1].equals("A") && !datos[1].contains("(")){
+								if(var.containsKey(datos[1])){
+									System.out.println(MovBLit(var.get(datos[1])));
+								}
+								else{
+									System.out.println(MovBLit(Integer.parseInt(datos[1])));
+								}
+							}
+							if(datos[0].equals("A") && !datos[1].equals("B") && datos[1].contains("(")){
+								String dir = datos[1].substring(1, datos[1].length());
+								if(var.containsKey(dir)){
+									System.out.println(MovADir(var.get(dir)));
+								}
+								else if(dir.equals("A")){
+									System.out.println(MovADir(A));
+								}
+								else if(dir.equals("B")){
+									System.out.println(MovADir(B));
+								}
+								else{
+									System.out.println(MovADir(Integer.parseInt(dir)));
+								}
+							}
+							if(datos[0].equals("B") && !datos[1].equals("A") && datos[1].contains("(")){
+								String dir = datos[1].substring(1, datos[1].length());
+								if(var.containsKey(dir)){
+									System.out.println(MovBDir(var.get(dir)));
+								}
+								else if(dir.equals("A")){
+									System.out.println(MovBDir(A));
+								}
+								else if(dir.equals("B")){
+									System.out.println(MovBDir(B));
+								}
+								else{
+									System.out.println(MovBDir(Integer.parseInt(dir)));
+								}
+							}
+							if(datos[0].contains("(") && datos[1].equals("A")){
+								String dir = datos[0].substring(1, datos[0].length());
+								if(var.containsKey(dir)){
+									System.out.println(MovDirA(var.get(dir)));
+								}
+								else if(dir.equals("A")){
+									System.out.println(MovDirA(A));
+								}
+								else if(dir.equals("B")){
+									System.out.println(MovDirA(B));
+								}
+								else{
+									System.out.println(MovDirA(Integer.parseInt(dir)));
+								}
+							}
+							if(datos[0].contains("(") && datos[1].equals("B")){
+								String dir = datos[0].substring(1, datos[0].length());
+								if(var.containsKey(dir)){
+									System.out.println(MovDirB(var.get(dir)));
+								}
+								else if(dir.equals("A")){
+									System.out.println(MovDirB(A));
+								}
+								else if(dir.equals("B")){
+									System.out.println(MovDirB(B));
+								}
+								else{
+									System.out.println(MovDirB(Integer.parseInt(dir)));
+								}
+							}
+						}
+						else if(info[0].equals("ADD")){
+							String[] datos = info[1].split(",");
+							if(datos.length <= 1){
+								String dir = datos[0].substring(1, datos[0].length());
+								System.out.println(AddDir(Integer.parseInt(dir)));
+							}
+							else if(datos[0].equals("A") && datos[1].equals("B")){
+								System.out.println(AddAB());
+							}
+							else if(datos[0].equals("B") && datos[1].equals("A")){
+								System.out.println(AddBA());
+							}
+							else if(datos[0].equals("A") && !datos[1].equals("B") && !datos[1].contains("(")){
+								if(var.containsKey(datos[1])){
+									System.out.println(AddALit(var.get(datos[1])));
+								}
+								else{
+									System.out.println(AddALit(Integer.parseInt(datos[1])));
+								}
+							}
+							else if(datos[0].equals("B") && !datos[1].equals("A") && !datos[1].contains("(")){
+								if(var.containsKey(datos[1])){
+									System.out.println(AddBLit(var.get(datos[1])));
+								}
+								else{
+									System.out.println(AddBLit(Integer.parseInt(datos[1])));
+								}
+							}
+							if(datos[0].equals("A") && !datos[1].equals("B") && datos[1].contains("(")){
+								String dir = datos[1].substring(1, datos[1].length());
+								if(var.containsKey(dir)){
+									System.out.println(AddADir(var.get(dir)));
+								}
+								else if(dir.equals("A")){
+									System.out.println(AddADir(A));
+								}
+								else if(dir.equals("B")){
+									System.out.println(AddABDir());
+								}
+								else{
+									System.out.println(AddADir(Integer.parseInt(dir)));
+								}
+							}
+							/*
+							if(datos[0].equals("B") && !datos[1].equals("A") && datos[1].contains("(")){
+								String dir = datos[1].substring(1, datos[1].length());
+								if(var.containsKey(dir)){
+									System.out.println(AddBDir(var.get(dir)));
+								}
+								else if(dir.equals("A")){
+									System.out.println(AddBDir(A));
+								}
+								else if(dir.equals("B")){
+									System.out.println(AddBDir(B));
+								}
+								else{
+									System.out.println(AddBDir(Integer.parseInt(dir)));
+								}
+							}
+							 */
+						}
+						else if(info[0].equals("ADD")){
+							String[] datos = info[1].split(",");
+							if(datos.length <= 1){
+								String dir = datos[0].substring(1, datos[0].length());
+								System.out.println(SubDir(Integer.parseInt(dir)));
+							}
+							else if(datos[0].equals("A") && datos[1].equals("B")){
+								System.out.println(SubAB());
+							}
+							else if(datos[0].equals("B") && datos[1].equals("A")){
+								System.out.println(SubBA());
+							}
+							else if(datos[0].equals("A") && !datos[1].equals("B") && !datos[1].contains("(")){
+								if(var.containsKey(datos[1])){
+									System.out.println(SubALit(var.get(datos[1])));
+								}
+								else{
+									System.out.println(SubALit(Integer.parseInt(datos[1])));
+								}
+							}
+							else if(datos[0].equals("B") && !datos[1].equals("A") && !datos[1].contains("(")){
+								if(var.containsKey(datos[1])){
+									System.out.println(SubBLit(var.get(datos[1])));
+								}
+								else{
+									System.out.println(SubBLit(Integer.parseInt(datos[1])));
+								}
+							}
+							if(datos[0].equals("A") && !datos[1].equals("B") && datos[1].contains("(")){
+								String dir = datos[1].substring(1, datos[1].length());
+								if(var.containsKey(dir)){
+									System.out.println(SubADir(var.get(dir)));
+								}
+								else if(dir.equals("A")){
+									System.out.println(SubADir(A));
+								}
+								else if(dir.equals("B")){
+									System.out.println(SubABDir());
+								}
+								else{
+									System.out.println(SubADir(Integer.parseInt(dir)));
+								}
+							}
+						}
+						else if(info[0].equals("INC")){
+							if(info[1].equals("A")){
+								System.out.println(IncA());
+							}
+							if(info[1].equals("B")){
+								System.out.println(IncB());
+							}
+						}
+						else if(info[0].equals("DEC")){
+							if(info[1].equals("A")){
+								System.out.println(DecA());
+							}
+						}
+						else if(info[0].equals("JEQ")){
+							System.out.println(JEQ(info[1]));
+						}	
+						else if(info[0].equals("JNE")){
+								System.out.println(JNE(info[1]));
+						}
+						else if(info[0].equals("JMP")){
+								System.out.println(JMP(info[1]));
+						}
 					}
 				}
 				linea++;
@@ -182,18 +389,34 @@ public class Principal {
 	}
 
 	public static String AddALit(int dir){
-		A += mem[dir];
+		A += dir;
 		String a = Integer.toBinaryString(dir);
 		return "25Õb0000000 0010000010"+a;
 	}
 
-	/*
 	public static String AddBLit(int dir){
-		mem[dir] = B;
+		B += dir;
 		String a = Integer.toBinaryString(dir);
 		return "25Õb0000000 0000101011"+a;
 	}
-	 */
+
+	public static String AddADir(int dir){
+		A += mem[dir];
+		String a = Integer.toBinaryString(dir);
+		return "25Õb0000000 0000101011"+a;
+	}
+
+	public static String AddBDir(int dir){
+		B += mem[dir];
+		String a = Integer.toBinaryString(dir);
+		return "25Õb0000000 0000101011"+a;
+	}
+
+
+	public static String AddDir(int dir){
+		String a = Integer.toBinaryString(dir);
+		return "25Õb00000 000000001011"+a;
+	}
 
 	public static String SubAB(){
 		A -= B;
