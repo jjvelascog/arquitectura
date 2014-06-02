@@ -6,20 +6,21 @@ public class Principal {
 	/**
 	 * @param args
 	 */
-
 	static int[] mem;
 	static int A, B;
 	static int[] var;
 	static Map<String, Integer> map;
+	static final String bin = "25'b00000";
+	static final String end = "00000000";
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		start();
+		Start();
 		PreLeer("texto.txt");
 		Transformar("texto.txt");
 	}
 
-	public static void start(){
+	public static void Start(){
 		mem = new int[256];
 		for(int i = 0; i<256; i++){
 			mem[i] = 0;
@@ -124,126 +125,167 @@ public class Principal {
 			System.err.println("Ocurrio un error: " + e.getMessage());
 		}
 	}
+	
+	public static String Completar(int i){	
+		String a = Integer.toBinaryString(i);	
+		while(a.length() < 8){
+			a = 0 + a;
+		}
+		return a;
+	}
 
+	//Instrucciones
+	
 	public static String MovAB(){
 		A = B;
-		return "25Õb0000000001010101000000000";
+		return bin+"000010101010"+end;
 	}
 
 	public static String MovBA(){
 		B = A;
-		return "25Õb0000000 000100111000000000";
+		return bin+"000001001110"+end;
 	}
-
+	
 	public static String MovALit(int lit){
 		A = lit;
-		String a = Integer.toBinaryString(lit);
-		return "25Õb0000000 0010110010"+a;
+		return bin+"000010110010"+Completar(lit);
 	}
 
 	public static String MovBLit(int lit){
 		B = lit;
-		String a = Integer.toBinaryString(lit);
-		return "25Õb0000000 0001110010"+a;
+		return bin+"000001110010"+Completar(lit);
 	}
 
 	public static String MovADir(int dir){
 		A = mem[dir];
-		String a = Integer.toBinaryString(dir);
-		return "25Õb0000000 0000101010"+a;
+		return bin+"000000101010"+Completar(dir);
 	}
 
 	public static String MovBDir(int dir){
 		B = mem[dir];
-		String a = Integer.toBinaryString(dir);
-		return "25Õb0000000 0000110110"+a;
+		return bin+"000000110110"+Completar(dir);
 	}
 
 	public static String MovDirA(int dir){
 		mem[dir] = A;
-		String a = Integer.toBinaryString(dir);
-		return "25Õb0000000 0000001111"+a;
+		return bin+"000000001111"+Completar(dir);
 	}
 
 	public static String MovDirB(int dir){
 		mem[dir] = B;
-		String a = Integer.toBinaryString(dir);
-		return "25Õb0000000 0000101011"+a;
+		return bin+"000000101011"+Completar(dir);
 	}
 
+	public static String MovADirB(){
+		A = mem[B];
+		return bin+"100010100110"+end;
+	}
+	
+	public static String MovBDirA(){
+		B = mem[A];
+		return bin+"100001100110"+end;
+	}
+	
+	public static String MovDirBA(){
+		mem[B] = A;
+		return bin+"100000001111"+end;
+	}
+	
 	public static String AddAB(){
 		A += B;
-		return "25Õb0000000 001000101000000000";
+		return bin+"000010001010"+end;
 	}
 
 	public static String AddBA(){
 		B += A;
-		return "25Õb0000000 000100101000000000";
+		return bin+"000001001010"+end;
 	}
 
-	public static String AddALit(int dir){
+	public static String AddALit(int lit){
+		A += lit;
+		return bin+"000010000010"+Completar(lit);
+	}
+	
+	public static String AddBLit(int lit){
+		B += lit;
+		return bin+"000001000010"+Completar(lit);
+	}
+	
+	public static String AddADir(int dir){
 		A += mem[dir];
-		String a = Integer.toBinaryString(dir);
-		return "25Õb0000000 0010000010"+a;
+		return bin+"000010000110"+Completar(dir);
 	}
 
-	/*
-	public static String AddBLit(int dir){
-		mem[dir] = B;
-		String a = Integer.toBinaryString(dir);
-		return "25Õb0000000 0000101011"+a;
+	public static String AddADirB(){
+		A += mem[B];
+		return bin+"100010000110"+end;
 	}
-	 */
 
+	public static String AddDir(int dir){
+		mem[dir] = A + B;
+		return bin+"000000001011"+Completar(dir);
+	}
+	
 	public static String SubAB(){
 		A -= B;
-		return "25Õb0000000 001000100000000000";
+		return bin+"000010001000"+end;
 	}
 
-	/*
 	public static String SubBA(){
 		B -= A;
-		return "25Õb0000000 0010000010";
+		return bin+"000001001000"+end;
 	}
-	 */
 
-	public static String SubALit(int dir){
+	public static String SubALit(int lit){
+		A -= lit;
+		return bin+"000010000000"+Completar(lit);
+	}
+	
+	public static String SubBLit(int lit){
+		B -= lit;
+		return bin+"000001000000"+Completar(lit);
+	}	
+	
+	public static String SubADir(int dir){
 		A -= mem[dir];
-		String a = Integer.toBinaryString(dir);
-		return "25Õb0000000 0010000000"+a;
+		return bin+"000010000100"+Completar(dir);
 	}
 
-	/*
-	public static String SubBLit(int dir){
-		B += mem[dir];
-		String a = Integer.toBinaryString(dir);
-		return "25Õb0000000 0010000010"+a;
+	public static String SubADirB(){
+		A -= mem[B];
+		return bin+"100010000100"+end;
 	}
-	 */
-
+	
+	public static String SubDir(int dir){
+		mem[dir] = A - B;
+		return bin+"000000001001"+Completar(dir);
+	}
+	
+	public static String IncA(){
+		A++;
+		return bin+"000010000010"+"00000001";
+	}
+	
 	public static String IncB(){
 		B++;
-		return "25Õb0000000 000101101000000000";
+		return bin+"000001011010"+end;
 	}
 
+	public static String DecA(){
+		A--;
+		return bin+"0000100000"+"00000001";
+	}
+	
 	public static String JEQ(int inst){
-		String a = Integer.toBinaryString(inst);
-		return "25Õb0000000 1000000000 00000000";
+		return bin+"001000000000"+Completar(inst);
 	}
 
+	public static String JNE(int inst){
+		return bin+"010000000000"+Completar(inst);
+	}
+	
 	public static String JMP(int inst){
-		String a = Integer.toBinaryString(inst);
-		return "25Õb0000000 0100000000 00000000";
+		return bin+"000100000000"+Completar(inst);
 	}
-
-	public static String CMPAB(){
-		return "25Õb0000000 000000100000000000";
-	}
-
-	public static String CMPALit(int lit){
-		String a = Integer.toBinaryString(lit);
-		return "25Õb0000000 0000000000 xxxxxxxx";
-	}
-
 
 }
